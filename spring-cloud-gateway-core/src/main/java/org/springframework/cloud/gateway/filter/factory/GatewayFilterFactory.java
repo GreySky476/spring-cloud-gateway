@@ -26,9 +26,13 @@ import org.springframework.cloud.gateway.support.ShortcutConfigurable;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 
 /**
+ *
+ * 生产 GatewayFilter
+ *
  * @author Spencer Gibb
  */
 @FunctionalInterface
+// 继承 configurable
 public interface GatewayFilterFactory<C> extends ShortcutConfigurable, Configurable<C> {
 
 	String NAME_KEY = "name";
@@ -50,6 +54,7 @@ public interface GatewayFilterFactory<C> extends ShortcutConfigurable, Configura
 		throw new UnsupportedOperationException("newConfig() not implemented");
 	}
 
+	// 通过 config 生产 GatewayFilter
 	GatewayFilter apply(C config);
 
 	default String name() {

@@ -20,6 +20,8 @@ package org.springframework.cloud.gateway.route;
 import reactor.core.publisher.Flux;
 
 /**
+ * 外部化配置 route 使用的是 routeDefinition，同样有 RouteDefinitionLocator 组件
+ *
  * @author Spencer Gibb
  */
 public interface RouteDefinitionLocator {

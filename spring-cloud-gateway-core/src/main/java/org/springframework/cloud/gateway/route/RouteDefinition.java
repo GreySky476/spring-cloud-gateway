@@ -34,23 +34,30 @@ import java.util.UUID;
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
+ * 定义 route 信息，最终被 RouteLocator 解析成 Route
+ *
  * @author Spencer Gibb
  */
 @Validated
 public class RouteDefinition {
+	// 生成 id
 	@NotEmpty
 	private String id = UUID.randomUUID().toString();
 
+	// 定义 prdicates
 	@NotEmpty
 	@Valid
 	private List<PredicateDefinition> predicates = new ArrayList<>();
 
+	// 定义 filter
 	@Valid
 	private List<FilterDefinition> filters = new ArrayList<>();
 
+	// 定义 uri
 	@NotNull
 	private URI uri;
 
+	// 定义序号
 	private int order = 0;
 
 	public RouteDefinition() {}

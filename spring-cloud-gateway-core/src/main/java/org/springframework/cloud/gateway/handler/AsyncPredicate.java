@@ -25,10 +25,15 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
+ * route 中定义的一部分，用于条件匹配
+ *
  * @author Ben Hale
  */
 public interface AsyncPredicate<T> extends Function<T, Publisher<Boolean>> {
 
+	/**
+	 * 与操作，两个 predicate 组成一个，需要同时满足
+	 */
 	default AsyncPredicate<T> and(AsyncPredicate<? super T> other) {
 		Objects.requireNonNull(other, "other must not be null");
 
@@ -36,10 +41,16 @@ public interface AsyncPredicate<T> extends Function<T, Publisher<Boolean>> {
 				.map(tuple -> tuple.getT1() && tuple.getT2());
 	}
 
+	/**
+	 * 取反操作，对 predicate 匹配结果取反
+	 */
 	default AsyncPredicate<T> negate() {
 		return t -> Mono.from(apply(t)).map(b -> !b);
 	}
 
+	/**
+	 * or，两个满足其一
+	 */
 	default AsyncPredicate<T> or(AsyncPredicate<? super T> other) {
 		Objects.requireNonNull(other, "other must not be null");
 

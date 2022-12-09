@@ -18,6 +18,8 @@
 package org.springframework.cloud.gateway.support;
 
 public interface Configurable<C> {
+	// 获取配置类的类型
 	Class<C> getConfigClass();
+	// 创建一个 config 实例
 	C newConfig();
 }

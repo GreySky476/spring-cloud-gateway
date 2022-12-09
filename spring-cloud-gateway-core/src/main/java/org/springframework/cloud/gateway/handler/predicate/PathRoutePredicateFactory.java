@@ -63,6 +63,7 @@ public class PathRoutePredicateFactory extends AbstractRoutePredicateFactory<Pat
 			pathPatternParser.setMatchOptionalTrailingSeparator(config.isMatchOptionalTrailingSeparator());
 			config.pathPattern = this.pathPatternParser.parse(config.pattern);
 		}
+		log.debug(pathPatternParser);
 		return exchange -> {
 			PathContainer path = parsePath(exchange.getRequest().getURI().getRawPath());
 

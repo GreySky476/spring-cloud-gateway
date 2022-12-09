@@ -29,9 +29,13 @@ import org.springframework.web.server.ServerWebExchange;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.toAsyncPredicate;
 
 /**
+ * 所有 PredicateFactory 的顶级接口，职责是生产 predicate
+ * 创建一个用于配置用于的对象（config），以其作为参数应用到 apply 方法上来生产一个 predicate 对象，再包装成 AsyncPredicate
+ *
  * @author Spencer Gibb
  */
-@FunctionalInterface
+@FunctionalInterface // 声明是一个函数接口
+// 扩展了 Configurable 接口
 public interface RoutePredicateFactory<C> extends ShortcutConfigurable, Configurable<C> {
 	String PATTERN_KEY = "pattern";
 
@@ -61,8 +65,10 @@ public interface RoutePredicateFactory<C> extends ShortcutConfigurable, Configur
 
 	default void beforeApply(C config) {}
 
+	// 核心方法，函数接口唯一抽象方法，用于生产 Predicate，接收一个泛型参数 config
 	Predicate<ServerWebExchange> apply(C config);
 
+	// 对参数 config 应用工厂方法，将结果 predicate 包装成 asyncPredicate，包装是为了使用非阻塞模型
 	default AsyncPredicate<ServerWebExchange> applyAsync(C config) {
 		return toAsyncPredicate(apply(config));
 	}

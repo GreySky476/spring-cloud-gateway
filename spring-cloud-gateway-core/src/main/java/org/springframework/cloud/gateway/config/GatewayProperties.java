@@ -33,9 +33,11 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 
 /**
+ * 外部化配置类
+ *
  * @author Spencer Gibb
  */
-@ConfigurationProperties("spring.cloud.gateway")
+@ConfigurationProperties("spring.cloud.gateway") // 表示以 spring.cloud.gateway 前缀的 properties 会绑定 GatewayProperties
 @Validated
 public class GatewayProperties {
 
@@ -45,11 +47,12 @@ public class GatewayProperties {
 	 */
 	@NotNull
 	@Valid
-	private List<RouteDefinition> routes = new ArrayList<>();
+	private List<RouteDefinition> routes = new ArrayList<>(); // 用来对 route 进行定义
 
 	/**
 	 * List of filter definitions that are applied to every route.
 	 */
+	// 定义默认的 filter 列表，默认的 filter 会应用到每一个 route 上，处理时会将其与 Route 中执行的 filter 合并后逐个执行
 	private List<FilterDefinition> defaultFilters = new ArrayList<>();
 
 	private List<MediaType> streamingMediaTypes = Arrays.asList(MediaType.TEXT_EVENT_STREAM,

@@ -27,8 +27,11 @@ import org.springframework.web.server.ServerWebExchange;
 import static org.springframework.cloud.gateway.handler.predicate.BetweenRoutePredicateFactory.getZonedDateTime;
 
 /**
+ * 仅匹配发生在设定时间之后的请求
+ *
  * @author Spencer Gibb
  */
+// AbstractRoutePredicateFactory<C> 声明了泛型，这里使用 AfterRoutePredicateFactory 定义的内部类 Config
 public class AfterRoutePredicateFactory extends AbstractRoutePredicateFactory<AfterRoutePredicateFactory.Config> {
 
 	public static final String DATETIME_KEY = "datetime";
@@ -42,6 +45,7 @@ public class AfterRoutePredicateFactory extends AbstractRoutePredicateFactory<Af
 		return Collections.singletonList(DATETIME_KEY);
 	}
 
+	// 生产 predicate 对象，逻辑判断当前时间（执行时）是否在 Config 中指定的 datetime 之后
 	@Override
 	public Predicate<ServerWebExchange> apply(Config config) {
 		ZonedDateTime datetime = getZonedDateTime(config.getDatetime());

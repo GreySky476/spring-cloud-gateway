@@ -52,6 +52,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 
 /**
+ * RouteLocator 主要实现类，用于将 RouteDefinition 转换成 route
+ *
  * {@link RouteLocator} that loads routes from a {@link RouteDefinitionLocator}
  * @author Spencer Gibb
  */
@@ -66,10 +68,11 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 	private BeanFactory beanFactory;
 	private ApplicationEventPublisher publisher;
 
-	public RouteDefinitionRouteLocator(RouteDefinitionLocator routeDefinitionLocator,
-									   List<RoutePredicateFactory> predicates,
+	public RouteDefinitionRouteLocator(RouteDefinitionLocator routeDefinitionLocator,// RouteDefinitionLocator 对象
+									   List<RoutePredicateFactory> predicates,// predicates factories 工厂列表，key 为 name，value 为 factory 的 map
 									   List<GatewayFilterFactory> gatewayFilterFactories,
 									   GatewayProperties gatewayProperties) {
+
 		this.routeDefinitionLocator = routeDefinitionLocator;
 		initFactories(predicates);
 		gatewayFilterFactories.forEach(factory -> this.gatewayFilterFactories.put(factory.name(), factory));

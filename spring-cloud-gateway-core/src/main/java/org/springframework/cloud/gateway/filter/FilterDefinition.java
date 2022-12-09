@@ -29,17 +29,27 @@ import org.springframework.validation.annotation.Validated;
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
+ * 用于定义 Filter
+ *
  * @author Spencer Gibb
  */
 @Validated
 public class FilterDefinition {
 	@NotNull
-	private String name;
-	private Map<String, String> args = new LinkedHashMap<>();
+	private String name; // 定义 filter 名称，符合特定的命名规范，为对应的工厂名前缀
+	/*
+	filters:
+        - AddRequestHeader=X-Request-Foo, Bar
+    以上面参数为例，
+    	AddRequestHeader 对应 FilterDefinition 的 name，AddRequestHeader 为 AddRequestHeaderGatewayFilterFactory 前缀
+    	X-Request-Foo, Bar，会解析成 FilterDefinition Map 类型属性 args。此处被划分成两对键值对，以英文逗号划分，key 是固定的 _genkey_ 加下标
+	 */
+	private Map<String, String> args = new LinkedHashMap<>(); // 一个键值对参数用于构造 Filter 对象
 
 	public FilterDefinition() {
 	}
 
+	// 构造函数，这里解析并填充了 args
 	public FilterDefinition(String text) {
 		int eqIdx = text.indexOf('=');
 		if (eqIdx <= 0) {

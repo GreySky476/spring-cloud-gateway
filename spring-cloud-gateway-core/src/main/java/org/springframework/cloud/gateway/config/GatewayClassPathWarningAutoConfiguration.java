@@ -7,6 +7,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * GatewayClassPathWarningAutoConfiguration 用于检查项目是否正确导入 spring-boot-starter-webflux 依赖，而不是导入 spring-boot-starter-web
+ */
 @Configuration
 @AutoConfigureBefore(GatewayAutoConfiguration.class)
 public class GatewayClassPathWarningAutoConfiguration {
@@ -14,6 +17,9 @@ public class GatewayClassPathWarningAutoConfiguration {
 	private static final Log log = LogFactory.getLog(GatewayClassPathWarningAutoConfiguration.class);
 	private static final String BORDER = "\n\n**********************************************************\n\n";
 
+	/**
+	 * 用于检查是否错误导入了 spring-boot-starter-web 依赖
+	 */
 	@Configuration
 	@ConditionalOnClass(name = "org.springframework.web.servlet.DispatcherServlet")
 	protected static class SpringMvcFoundOnClasspathConfiguration {
@@ -25,6 +31,9 @@ public class GatewayClassPathWarningAutoConfiguration {
 
 	}
 
+	/**
+	 * 检查项目是否导入了 spring-boot-starter-webflux 依赖
+	 */
 	@Configuration
 	@ConditionalOnMissingClass("org.springframework.web.reactive.DispatcherHandler")
 	protected static class WebfluxMissingFromClasspathConfiguration {

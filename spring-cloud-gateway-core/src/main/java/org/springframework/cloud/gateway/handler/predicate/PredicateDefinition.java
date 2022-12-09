@@ -30,13 +30,15 @@ import org.springframework.validation.annotation.Validated;
 import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
+ * 定义 predicate
+ *
  * @author Spencer Gibb
  */
 @Validated
 public class PredicateDefinition {
 	@NotNull
-	private String name;
-	private Map<String, String> args = new LinkedHashMap<>();
+	private String name; // 符号固定的命名规范，为对应的工厂名称
+	private Map<String, String> args = new LinkedHashMap<>();// 构造 predicate 使用到的键值对参数，与 FilterDefinition 类似
 
 	public PredicateDefinition() {
 	}
