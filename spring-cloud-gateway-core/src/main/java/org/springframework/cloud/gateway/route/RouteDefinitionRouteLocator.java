@@ -70,8 +70,9 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 
 	public RouteDefinitionRouteLocator(RouteDefinitionLocator routeDefinitionLocator,// RouteDefinitionLocator 对象
 									   List<RoutePredicateFactory> predicates,// predicates factories 工厂列表，key 为 name，value 为 factory 的 map
-									   List<GatewayFilterFactory> gatewayFilterFactories,
-									   GatewayProperties gatewayProperties) {
+									   List<GatewayFilterFactory> gatewayFilterFactories,// filter factory 工厂列表，同样映射成 map
+									   GatewayProperties gatewayProperties// 外部化配置类
+	) {
 
 		this.routeDefinitionLocator = routeDefinitionLocator;
 		initFactories(predicates);

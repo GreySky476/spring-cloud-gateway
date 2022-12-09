@@ -55,12 +55,12 @@ public class GatewaySampleApplication {
 		// String uri = "http://httpbin.org:80";
 		// String uri = "http://localhost:9080";
 		return builder.routes()
-//				.route(r -> r.host("**.abc.org").and().path("/anything/png")
-//					.filters(f ->
-//							f.prefixPath("/httpbin")
-//									.addResponseHeader("X-TestHeader", "foobar"))
-//					.uri(uri)
-//				)
+				.route(r -> r.host("**.abc.org").and().path("/anything/png")
+					.filters(f ->
+							f.prefixPath("/httpbin")
+									.addResponseHeader("X-TestHeader", "foobar"))
+					.uri(uri)
+				)
 //				.route("read_body_pred", r -> r.host("*.readbody.org")
 //						.and().readBody(String.class,
 //										s -> s.trim().equalsIgnoreCase("hi"))
