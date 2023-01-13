@@ -38,4 +38,4 @@ GatewayFilterFactory 和 RoutePredicateFactor 都实现了 Configurable 接口
 ----- 方便用户自定义 RouteDefinition
 ```
 ## GatewayAutoConfiguration 自动装配类整理的类图
-[img/8c891d90b4428241cb1350121db1d925.png]
+![img-8c891d90b4428241cb1350121db1d925.png](img/8c891d90b4428241cb1350121db1d925.png)
