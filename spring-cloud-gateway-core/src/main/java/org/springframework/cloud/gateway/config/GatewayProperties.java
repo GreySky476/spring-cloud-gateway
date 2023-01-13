@@ -37,7 +37,8 @@ import org.springframework.validation.annotation.Validated;
  *
  * @author Spencer Gibb
  */
-@ConfigurationProperties("spring.cloud.gateway") // 表示以 spring.cloud.gateway 前缀的 properties 会绑定 GatewayProperties
+// 表示以 spring.cloud.gateway 前缀的 properties 会绑定 GatewayProperties
+@ConfigurationProperties("spring.cloud.gateway")
 @Validated
 public class GatewayProperties {
 

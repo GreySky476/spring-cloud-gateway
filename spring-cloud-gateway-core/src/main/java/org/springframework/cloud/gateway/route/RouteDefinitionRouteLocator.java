@@ -108,9 +108,11 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 		});
 	}
 
+	// 实现 RouteLocator 的 getRoutes() 方法
 	@Override
 	public Flux<Route> getRoutes() {
 		return this.routeDefinitionLocator.getRouteDefinitions()
+				// convertToRoute 方法将 RouteDefinition 转换成 Route
 				.map(this::convertToRoute)
 				//TODO: error handling
 				.map(route -> {
@@ -128,9 +130,12 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 	}
 
 	private Route convertToRoute(RouteDefinition routeDefinition) {
+		// 将 PredicateDefinition 转换成 AsyncPredicate<ServerWebExchange>
 		AsyncPredicate<ServerWebExchange> predicate = combinePredicates(routeDefinition);
+		// 将 FilterDefinition 转换成 GatewayFilter
 		List<GatewayFilter> gatewayFilters = getFilters(routeDefinition);
 
+		// 合并 AsyncPredicate<ServerWebExchange>、GatewayFilter 生成 Route 对象
 		return Route.async(routeDefinition)
 				.asyncPredicate(predicate)
 				.replaceFilters(gatewayFilters)
@@ -141,27 +146,31 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 	List<GatewayFilter> loadGatewayFilters(String id, List<FilterDefinition> filterDefinitions) {
 		ArrayList<GatewayFilter> ordered = new ArrayList<>(filterDefinitions.size());
 		for (int i = 0; i < filterDefinitions.size(); i++) {
+			// 遍历获取 FilterDefinition
 			FilterDefinition definition = filterDefinitions.get(i);
+			// 根据名称获取对应 GatewayFilterFactory
 			GatewayFilterFactory factory = this.gatewayFilterFactories.get(definition.getName());
 			if (factory == null) {
 				throw new IllegalArgumentException("Unable to find GatewayFilterFactory with name " + definition.getName());
 			}
+			// 获取参数
 			Map<String, String> args = definition.getArgs();
 			if (logger.isDebugEnabled()) {
 				logger.debug("RouteDefinition " + id + " applying filter " + args + " to " + definition.getName());
 			}
-
+			// 对 args 进一步转换，key 为 config 类（工厂通过泛型指定）的属性名称
 			Map<String, Object> properties = factory.shortcutType().normalize(args, factory, this.parser, this.beanFactory);
-
+			// 创建 Config
 			Object configuration = factory.newConfig();
-
+			// config 绑定 properties
 			ConfigurationUtils.bind(configuration, properties,
 					factory.shortcutFieldPrefix(), definition.getName(), validator);
-
+			// 将 config 作为参数传入，调用 factory 的 applyAsync 方法创建 GatewayFilter 对象
 			GatewayFilter gatewayFilter = factory.apply(configuration);
 			if (this.publisher != null) {
 				this.publisher.publishEvent(new FilterArgsEvent(this, id, properties));
 			}
+			// 如果实现了 Ordered 接口，则直接添加，否则创建为 OrderedGatewayFilter，序号递增
 			if (gatewayFilter instanceof Ordered) {
 				ordered.add(gatewayFilter);
 			}
@@ -169,13 +178,14 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 				ordered.add(new OrderedGatewayFilter(gatewayFilter, i + 1));
 			}
 		}
-
+		// 返回 List<GatewayFilter>
 		return ordered;
 	}
 
 	private List<GatewayFilter> getFilters(RouteDefinition routeDefinition) {
 		List<GatewayFilter> filters = new ArrayList<>();
 
+		// 如果没有自定义 Filters，加载 GatewayProperties 中默认的 DefaultFilters
 		//TODO: support option to apply defaults after route specific filters?
 		if (!this.gatewayProperties.getDefaultFilters().isEmpty()) {
 			filters.addAll(loadGatewayFilters("defaultFilters",
@@ -183,19 +193,24 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 		}
 
 		if (!routeDefinition.getFilters().isEmpty()) {
+			// 将 RouteDefinition 中的 filters 转成为 GatewayFilter
 			filters.addAll(loadGatewayFilters(routeDefinition.getId(), routeDefinition.getFilters()));
 		}
 
+		// 对 GatewayFilter 排序，具体查看 Ordered 接口
 		AnnotationAwareOrderComparator.sort(filters);
 		return filters;
 	}
 
 	private AsyncPredicate<ServerWebExchange> combinePredicates(RouteDefinition routeDefinition) {
 		List<PredicateDefinition> predicates = routeDefinition.getPredicates();
+		// 调用 lookup，将列表第一个转换成 AsyncPredicate
 		AsyncPredicate<ServerWebExchange> predicate = lookup(routeDefinition, predicates.get(0));
 
+		// 循环调用，将列表中每一个 PredicateDefinition 都转成成 AsyncPredicate
 		for (PredicateDefinition andPredicate : predicates.subList(1, predicates.size())) {
 			AsyncPredicate<ServerWebExchange> found = lookup(routeDefinition, andPredicate);
+			// 应用 and 操作，将所有的 AsyncPredicate 组合成一个 AsyncPredicate 对象
 			predicate = predicate.and(found);
 		}
 
@@ -204,23 +219,29 @@ public class RouteDefinitionRouteLocator implements RouteLocator, BeanFactoryAwa
 
 	@SuppressWarnings("unchecked")
 	private AsyncPredicate<ServerWebExchange> lookup(RouteDefinition route, PredicateDefinition predicate) {
+		// 根据名称获取 RoutePredicateFactory 对象
 		RoutePredicateFactory<Object> factory = this.predicates.get(predicate.getName());
 		if (factory == null) {
             throw new IllegalArgumentException("Unable to find RoutePredicateFactory with name " + predicate.getName());
 		}
+		// 获取 PredicateDefinition 中的 Map 类型参数，Key 是固定字符串 _genkey_ + 下标拼接而成
 		Map<String, String> args = predicate.getArgs();
 		if (logger.isDebugEnabled()) {
 			logger.debug("RouteDefinition " + route.getId() + " applying "
 					+ args + " to " + predicate.getName());
 		}
 
+		// 对 args 进一步转换，key 为 config 类（工厂通过泛型指定）的属性名称
         Map<String, Object> properties = factory.shortcutType().normalize(args, factory, this.parser, this.beanFactory);
+		// 调用 factory 的 newConfig() 方法创建一个 config 对象
         Object config = factory.newConfig();
+        // 将 properties 绑定到 config 对象中
         ConfigurationUtils.bind(config, properties,
                 factory.shortcutFieldPrefix(), predicate.getName(), validator);
         if (this.publisher != null) {
             this.publisher.publishEvent(new PredicateArgsEvent(this, route.getId(), properties));
         }
+        // 将 config 作为参数传入，调用 factory 的 applyAsync 方法创建 AsyncPredicate 对象
         return factory.applyAsync(config);
 	}
 }

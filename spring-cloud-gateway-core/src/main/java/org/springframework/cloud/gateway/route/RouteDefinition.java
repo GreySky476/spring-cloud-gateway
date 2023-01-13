@@ -35,7 +35,7 @@ import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
  * 定义 route 信息，最终被 RouteLocator 解析成 Route
- *
+ * 定义路由类
  * @author Spencer Gibb
  */
 @Validated
@@ -44,7 +44,7 @@ public class RouteDefinition {
 	@NotEmpty
 	private String id = UUID.randomUUID().toString();
 
-	// 定义 prdicates
+	// 定义 prdicates（谓词）
 	@NotEmpty
 	@Valid
 	private List<PredicateDefinition> predicates = new ArrayList<>();

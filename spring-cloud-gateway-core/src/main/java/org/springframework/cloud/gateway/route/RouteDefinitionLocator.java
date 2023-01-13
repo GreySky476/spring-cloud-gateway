@@ -26,5 +26,6 @@ import reactor.core.publisher.Flux;
  */
 public interface RouteDefinitionLocator {
 
+	// 获取 RouteDefinition
 	Flux<RouteDefinition> getRouteDefinitions();
 }

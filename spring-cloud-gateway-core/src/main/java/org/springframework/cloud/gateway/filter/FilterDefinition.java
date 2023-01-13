@@ -30,7 +30,7 @@ import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 /**
  * 用于定义 Filter
- *
+ * 一个 FilterDefinition 对应一个 Filter
  * @author Spencer Gibb
  */
 @Validated

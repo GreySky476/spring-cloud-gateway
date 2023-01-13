@@ -11,22 +11,30 @@ spring:
   jmx:
     enabled: false
   cloud:
+    # 固定前缀
     gateway:
       default-filters:
 #      - PrefixPath=/httpbin
 #      - AddResponseHeader=X-Response-Default-Foo, Default-Bar
-
+      # 路由列表，可定义多个路由
       routes:
       # =====================================
       # to run server
       # $ wscat --listen 9000
       # to run client
       # $ wscat --connect ws://localhost:8080/echo
+        # 声明一个 id 为 websocket_test 的路由
       - id: websocket_test
+        # 定义了路由的目的地 url，即请求转发的地址
         uri: ws://localhost:9000
         order: 9000
+        # 定一个一个 Predicate，path 为 /echo 才能够匹配，由 PathRoutePredicateFactory 来生产
         predicates:
         - Path=/echo
+        # 定义 filters，即路由转发前后处理的过滤器
+        filters:
+        # 定义一个 Filter，所有的请求转发至下游服务时会添加请求头 X-Request-Foo:Bar，由 AddRequestHeaderGatewayFilterFactory 来生产
+        - AddRequestHeader=X-Request-Foo, Bar
       # =====================================
 #      - id: default_path_to_httpbin
 #        uri: ${test.uri}

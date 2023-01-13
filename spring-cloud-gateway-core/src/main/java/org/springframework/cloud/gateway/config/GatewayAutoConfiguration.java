@@ -288,6 +288,7 @@ public class GatewayAutoConfiguration {
 	@Bean // 4.1
 	@ConditionalOnMissingBean
 	public PropertiesRouteDefinitionLocator propertiesRouteDefinitionLocator(GatewayProperties properties) {
+		// RouteDefinitionLocator 的实现类，RouteDefinition 信息来自 GatewayProperties
 		return new PropertiesRouteDefinitionLocator(properties);
 	}
 
@@ -299,6 +300,8 @@ public class GatewayAutoConfiguration {
 
 	@Bean // 4.3
 	@Primary // 优先注入
+	// routeDefinitionLocators 使用 CompositeRouteDefinitionLocator 实现，组合了多个 RouteDefinitionLocator 实例。
+	// 给了用户提供可扩展的余地，可以根据需要扩展 RouteDefinitionLocator，比如 RouteDefinition 可源自数据库
 	public RouteDefinitionLocator routeDefinitionLocator(List<RouteDefinitionLocator> routeDefinitionLocators) {
 		return new CompositeRouteDefinitionLocator(Flux.fromIterable(routeDefinitionLocators));
 	}

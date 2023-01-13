@@ -55,10 +55,14 @@ public class GatewaySampleApplication {
 		// String uri = "http://httpbin.org:80";
 		// String uri = "http://localhost:9080";
 		return builder.routes()
+				// 指定 Predicates，请求头需要 Host 需要匹配 **.abc.org，通过 HostRoutePredicateFactory 产生
+				// 请求路径需要匹配 /anything/png，通过 PathRoutePredicateFactory 产生
 				.route(r -> r.host("**.abc.org").and().path("/anything/png")
+						// 指定一个 filter，下游服务响应后添加响应头 X-TestHeader:foobar，通过 AddResponseHeaderGatewayFilterFactory 产生
 					.filters(f ->
 							f.prefixPath("/httpbin")
 									.addResponseHeader("X-TestHeader", "foobar"))
+						// 指定路由转发的目的地 uri
 					.uri(uri)
 				)
 //				.route("read_body_pred", r -> r.host("*.readbody.org")
