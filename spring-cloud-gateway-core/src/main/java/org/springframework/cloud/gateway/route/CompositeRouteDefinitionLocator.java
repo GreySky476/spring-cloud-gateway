@@ -20,10 +20,16 @@ package org.springframework.cloud.gateway.route;
 import reactor.core.publisher.Flux;
 
 /**
+ * 复合路由定义定位器
+ * 组合多重 RouteDefinitionLocator 实现，为 RouteDefinitionRouteLocator 提供统一入口
+ *
  * @author Spencer Gibb
  */
 public class CompositeRouteDefinitionLocator implements RouteDefinitionLocator {
 
+	/**
+	 * RouteDefinitionLocator 数组
+	 */
 	private final Flux<RouteDefinitionLocator> delegates;
 
 	public CompositeRouteDefinitionLocator(Flux<RouteDefinitionLocator> delegates) {

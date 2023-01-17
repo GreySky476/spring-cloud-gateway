@@ -7,15 +7,26 @@ test:
 server:
   port: 8090
 
+
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
+  client:
+    service-url:
+      defaultZone: http://eureka.didispace.com/eureka/
+
 spring:
+  application:
+    name: spring-cloud-gateway-sample
   jmx:
     enabled: false
   cloud:
     # 固定前缀
     gateway:
       default-filters:
-#      - PrefixPath=/httpbin
-#      - AddResponseHeader=X-Response-Default-Foo, Default-Bar
+      - PrefixPath=/test
+      - AddResponseHeader=X-Response-Default-Foo, Default-Bar
       # 路由列表，可定义多个路由
       routes:
       # =====================================
@@ -47,6 +58,12 @@ spring:
         order: 10010
         predicates:
         - Path=/baidu
+      # 初始化 GatewayDiscoveryClientAutoConfiguration
+      enabled: true
+      # 初始化 DiscoveryClientRouteDefinitionLocator
+      discovery:
+        locator:
+          enabled: true
 
 logging:
   level:

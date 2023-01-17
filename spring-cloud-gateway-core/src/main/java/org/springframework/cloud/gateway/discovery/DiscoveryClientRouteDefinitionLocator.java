@@ -80,31 +80,40 @@ public class DiscoveryClientRouteDefinitionLocator implements RouteDefinitionLoc
 			};
 		}
 
+		// 获取服务名列表
 		return Flux.fromIterable(discoveryClient.getServices())
+				// 获取与服务名相关联的所有列表
 				.map(discoveryClient::getInstances)
 				.filter(instances -> !instances.isEmpty())
 				.map(instances -> instances.get(0))
 				.filter(includePredicate)
 				.map(instance -> {
-					String serviceId = instance.getServiceId();
 
+					String serviceId = instance.getServiceId();
+					// 创建 RouteDefinition
                     RouteDefinition routeDefinition = new RouteDefinition();
+                    // 设置 id
                     routeDefinition.setId(this.routeIdPrefix + serviceId);
 					String uri = urlExpr.getValue(evalCtxt, instance, String.class);
+					// 设置 uri
 					routeDefinition.setUri(URI.create(uri));
 
 					final ServiceInstance instanceForEval = new DelegatingServiceInstance(instance, properties);
 
+					// 添加断言
 					for (PredicateDefinition original : this.properties.getPredicates()) {
+						// 初始化自定义条件
 						PredicateDefinition predicate = new PredicateDefinition();
 						predicate.setName(original.getName());
 						for (Map.Entry<String, String> entry : original.getArgs().entrySet()) {
 							String value = getValueFromExpr(evalCtxt, parser, instanceForEval, entry);
 							predicate.addArg(entry.getKey(), value);
 						}
+						// 添加断言
 						routeDefinition.getPredicates().add(predicate);
 					}
 
+					// 添加过滤器
                     for (FilterDefinition original : this.properties.getFilters()) {
                     	FilterDefinition filter = new FilterDefinition();
                     	filter.setName(original.getName());
@@ -112,9 +121,9 @@ public class DiscoveryClientRouteDefinitionLocator implements RouteDefinitionLoc
 							String value = getValueFromExpr(evalCtxt, parser, instanceForEval, entry);
 							filter.addArg(entry.getKey(), value);
 						}
+						// 添加过滤器
 						routeDefinition.getFilters().add(filter);
 					}
-
                     return routeDefinition;
 				});
 	}

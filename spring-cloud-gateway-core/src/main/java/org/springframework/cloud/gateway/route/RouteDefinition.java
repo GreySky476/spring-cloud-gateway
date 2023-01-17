@@ -62,20 +62,26 @@ public class RouteDefinition {
 
 	public RouteDefinition() {}
 
+	/**
+	 * 按照该构造方法可知，
+	 * 	text 结构为 ${id}=${uri},${predicates[1]}...${predicate[n]}
+	 * 	例如：route001=127.0.0.1,Host=**.addrequestparameter.org,path=/get
+	 */
 	public RouteDefinition(String text) {
 		int eqIdx = text.indexOf('=');
 		if (eqIdx <= 0) {
 			throw new ValidationException("Unable to parse RouteDefinition text '" + text + "'" +
 					", must be of the form name=value");
 		}
-
+		// id
 		setId(text.substring(0, eqIdx));
-
+		// predicates
 		String[] args = tokenizeToStringArray(text.substring(eqIdx+1), ",");
-
+		// uri
 		setUri(URI.create(args[0]));
 
 		for (int i=1; i < args.length; i++) {
+			// 通过参数构建 predicateDefinition
 			this.predicates.add(new PredicateDefinition(args[i]));
 		}
 	}

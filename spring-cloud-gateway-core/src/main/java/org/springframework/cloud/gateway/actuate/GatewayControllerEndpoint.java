@@ -50,6 +50,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
+ * 网关控制器切点
+ *
  * @author Spencer Gibb
  */
 @RestControllerEndpoint(id = "gateway")
@@ -60,6 +62,7 @@ public class GatewayControllerEndpoint implements ApplicationEventPublisherAware
 	private RouteDefinitionLocator routeDefinitionLocator;
 	private List<GlobalFilter> globalFilters;
 	private List<GatewayFilterFactory> GatewayFilters;
+	// 存储器 RouteDefinitionLocator 对象
 	private RouteDefinitionWriter routeDefinitionWriter;
 	private RouteLocator routeLocator;
 	private ApplicationEventPublisher publisher;

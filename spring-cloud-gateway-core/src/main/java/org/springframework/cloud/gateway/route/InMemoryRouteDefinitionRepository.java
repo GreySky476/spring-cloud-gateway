@@ -28,10 +28,16 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
+ * 基于内存为存储器的 RouteDefinitionLocator
+ *
  * @author Spencer Gibb
  */
 public class InMemoryRouteDefinitionRepository implements RouteDefinitionRepository {
 
+	/**
+	 * 路由配置映射
+	 * key：路由编号
+	 */
 	private final Map<String, RouteDefinition> routes = synchronizedMap(new LinkedHashMap<String, RouteDefinition>());
 
 	@Override

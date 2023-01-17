@@ -49,15 +49,22 @@ public class FilterDefinition {
 	public FilterDefinition() {
 	}
 
-	// 构造函数，这里解析并填充了 args
+	/**
+	 * 根据 text 创建 FilterDefinition
+	 *
+	 * @param text 格式 ${name}=${args[0]}...${args[n]}
+	 *             例如 AddRequestParameter=foo,bar
+	 */
 	public FilterDefinition(String text) {
 		int eqIdx = text.indexOf('=');
 		if (eqIdx <= 0) {
 			setName(text);
 			return;
 		}
+		// name
 		setName(text.substring(0, eqIdx));
 
+		// args
 		String[] args = tokenizeToStringArray(text.substring(eqIdx+1), ",");
 
 		for (int i=0; i < args.length; i++) {

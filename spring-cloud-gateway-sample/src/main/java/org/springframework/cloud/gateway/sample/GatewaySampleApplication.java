@@ -20,6 +20,13 @@ package org.springframework.cloud.gateway.sample;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
+import org.springframework.cloud.gateway.discovery.DiscoveryLocatorProperties;
+import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import reactor.core.publisher.Mono;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +51,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 @EnableAutoConfiguration
 @Import(AdditionalRoutes.class)
 public class GatewaySampleApplication {
+
+	protected final Log logger = LogFactory.getLog(getClass());
 
 	public static final String HELLO_FROM_FAKE_ACTUATOR_METRICS_GATEWAY_REQUESTS = "hello from fake /actuator/metrics/gateway.requests";
 	@Value("${test.uri:http://httpbin.org:80}")
@@ -163,6 +172,20 @@ public class GatewaySampleApplication {
 			this.message = message;
 		}
 	}
+
+//	@Bean
+//	public DiscoveryLocatorProperties discoveryLocatorProperties() {
+//		DiscoveryLocatorProperties pro = new DiscoveryLocatorProperties();
+//		logger.info(pro.toString());
+//		return pro;
+//	}
+//
+//	@Bean
+//	@ConditionalOnMissingBean(DiscoveryLocatorProperties.class)
+//	public RouteDefinitionLocator discoveryClientRouteDefinitionLocator(DiscoveryClient discoveryClient, DiscoveryLocatorProperties discoveryLocatorProperties) {
+//		return new DiscoveryClientRouteDefinitionLocator(discoveryClient, discoveryLocatorProperties);
+//	}
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(GatewaySampleApplication.class, args);

@@ -52,6 +52,9 @@ public class GatewayProperties {
 
 	/**
 	 * List of filter definitions that are applied to every route.
+	 * 应用于每个路由的筛选器定义列表。
+	 * 默认过滤器配置，当 RouteDefinition => Route 时，会将过滤器配置添加到每个 Route
+	 * 在配置文件中通过 `spring.cloud.gateway.default-filters` 配置
 	 */
 	// 定义默认的 filter 列表，默认的 filter 会应用到每一个 route 上，处理时会将其与 Route 中执行的 filter 合并后逐个执行
 	private List<FilterDefinition> defaultFilters = new ArrayList<>();
